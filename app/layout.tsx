@@ -1,26 +1,32 @@
-
-import { Inter , Space_Grotesk } from 'next/font/google'
+// "use client"
+import React from 'react'
+import { Inter, Space_Grotesk } from 'next/font/google'
 import './globals.css'
 import { ClerkProvider } from '@clerk/nextjs'
-import { Metadata } from 'next'
+import type { Metadata } from 'next';
 import { ThemeProvider } from '@/context/ThemeProvider'
 
-const inter = Inter({ subsets: ['latin'],
-  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900' ],
-  variable: '--font-inter' })
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+  variable: '--font-inter'
+})
 
-const spacegrotesk = Space_Grotesk({ subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700', ],
-  variable: '--font-spaceGrotesk' })
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+  variable: '--font-spaceGrotesk'
+})
 
+ 
 export const metadata: Metadata = {
-  title: 'Stack Flow',
-  description: '',
-  icons:{
-    icon : '/assets/favicon.ico', 
-
+  title: 'StackFlow',
+  description: 'A community-driven platform for asking and answering programming questions. Get help, share knowledge, and collaborate with developers from around the world. Explore topics in web development, mobile app development, algorithms, data structures, and more.',
+  icons: {
+    icon: '/assets/images/stackflow.png'
   }
 }
+
 
 export default function RootLayout({
   children,
@@ -28,24 +34,21 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    
     <html lang="en">
-        <body className={inter.className}>
-        <ClerkProvider appearance={
-          {
-            elements:{
-              formButtonPrimary: 'primary-gradiant',
-              footerActionLink: 'primary-text-gradiant hover: text-primary-500',
-              
+      <body className={`${inter.variable} ${spaceGrotesk.variable}`}>
+        <ClerkProvider
+          appearance={{
+            elements: {
+              formButtonPrimary: 'primary-gradient',
+              footerActionLink: 'primary-text-gradient hover:text-primary-500'
             }
-          }
-        }>
-        <ThemeProvider >
-
-          {children}
-        </ThemeProvider>
+          }}
+        >
+          <ThemeProvider>
+            {children}
+          </ThemeProvider>
         </ClerkProvider>
-          </body>
-      </html>
+      </body>
+    </html>
   )
 }

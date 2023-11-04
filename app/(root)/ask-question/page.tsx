@@ -1,9 +1,17 @@
+// import QuestionCards from '@/components/cards/QuestionCards'
+import Question from '@/components/forms/Question'
 import React from 'react'
 
-const askQuestion = () => {
+const Page = () => {
   return (
-    <div>ask-Question</div>
+    <div>
+      <h1 className="h1-bold text-dark100_light900">Ask a question</h1>
+
+      <div className="mt-9">
+        <Question  />
+      </div>
+    </div>
   )
 }
 
-export default askQuestion
+export default Page
