@@ -9,5 +9,7 @@ export async function createQuestion () {
         connecToDatabase()
     } catch (error) {
         
+        
+
     }
 }
