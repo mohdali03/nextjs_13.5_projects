@@ -9,13 +9,13 @@ export interface ITag extends Document{
 }
 
 const TagSchema = new Schema({
-    name:{type: String, required: true, unique: true},
+name:{type: String, required: true, unique: true},
     desc: { type: String, required: true},
     question: [{type : Schema.Types.ObjectId, ref: "Question" }],
     follwers: [{type: Schema.Types.ObjectId, ref: "User" }],
     createOn: {type: Date, default: Date.now}
 })
 
-const Tag = models.Tag || model('Tag', TagSchema);
+export const Tag = models.Tag || model('Tag', TagSchema);
 
-export default Tag;
+

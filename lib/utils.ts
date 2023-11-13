@@ -1,9 +1,9 @@
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 import qs from "query-string"
-// import { BADGE_CRITERIA } from "@/constants";
+import { BADGE_CRITERIA } from "@/constant";
 import { BadgeCounts } from "@/types";
-
+ 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
@@ -51,8 +51,10 @@ export const formatAndDivideNumber = (num: number): string => {
   } else if (num >= 1000) {
     const formattedNum = (num / 1000).toFixed(1);
     return `${formattedNum}K`;
-  } else {
+  }if (num !== undefined && num !== null) {
     return num.toString();
+  } else {
+    return '0'; // or handle it in a way that makes sense for your use case
   }
 };
 
@@ -73,7 +75,7 @@ interface UrlQueryParams {
   value: string | null;
 }
 
-export const formUrlQuery = ({ params, key, value }: UrlQueryParams) => {
+export const formUrlQuery = ({ params, key, value}: UrlQueryParams) => {
   const currentUrl = qs.parse(params);
 
   currentUrl[key] = value;
@@ -82,7 +84,7 @@ export const formUrlQuery = ({ params, key, value }: UrlQueryParams) => {
     url: window.location.pathname,
     query: currentUrl,
   },
-    { skipNull: true })
+  { skipNull: true})
 }
 
 interface RemoveUrlQueryParams {
@@ -90,7 +92,7 @@ interface RemoveUrlQueryParams {
   keysToRemove: string[];
 }
 
-export const removeKeysFromQuery = ({ params, keysToRemove }: RemoveUrlQueryParams) => {
+export const removeKeysFromQuery = ({ params, keysToRemove}: RemoveUrlQueryParams) => {
   const currentUrl = qs.parse(params);
 
   keysToRemove.forEach((key) => {
@@ -101,7 +103,7 @@ export const removeKeysFromQuery = ({ params, keysToRemove }: RemoveUrlQueryPara
     url: window.location.pathname,
     query: currentUrl,
   },
-    { skipNull: true })
+  { skipNull: true})
 }
 
 interface BadgeParam {
@@ -125,8 +127,8 @@ export const assignBadges = (params: BadgeParam) => {
     const badgeLevels: any = BADGE_CRITERIA[type];
 
     Object.keys(badgeLevels).forEach((level: any) => {
-      if (count >= badgeLevels[level]) {
-        badgeCounts[level as keyof BadgeCounts] += 1;
+      if(count >= badgeLevels[level]) {
+        badgeCounts[level as keyof BadgeCounts] +=1 ;
       }
     })
   })

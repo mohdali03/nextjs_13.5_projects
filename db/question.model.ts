@@ -1,14 +1,14 @@
 import { Schema, models, model, Document } from "mongoose";
 
-export interface IQuestion extends Document{
-    title : string;
+export interface IQuestion extends Document {
+    title: string;
     content: string;
-    tag: Schema.Types.ObjectId[];
+    tags: Schema.Types.ObjectId[];
     view: number;
     upvotes: Schema.Types.ObjectId[];
     downvotes: Schema.Types.ObjectId[];
-    author:    Schema.Types.ObjectId[];
-    answer: Schema.Types.ObjectId[];
+    author: Schema.Types.ObjectId[];
+    answers: Schema.Types.ObjectId[];
     CreatedAt: Date;
     UpdateAt: Date;
 }
@@ -21,12 +21,7 @@ const questionSchema = new Schema({
         type: String,
         required: true,
     },
-    tag: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: 'Tag',
-        },
-    ],
+    tags: [{ type: Schema.Types.ObjectId, ref: 'Tag' }],
     view: {
         type: Number,
         default: 0,
@@ -47,7 +42,7 @@ const questionSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User',
     },
-    answer: [
+    answers: [
         {
             type: Schema.Types.ObjectId,
             ref: 'Answer',
@@ -63,5 +58,4 @@ const questionSchema = new Schema({
     },
 });
 
-const Question = models.Question  || model('Question', questionSchema);
-  
+export const Question = models.Question || model('Question', questionSchema);
