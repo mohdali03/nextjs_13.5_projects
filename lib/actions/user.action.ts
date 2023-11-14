@@ -5,7 +5,7 @@ import User from "@/db/users.model";
 import { connectToDatabase } from "../mongoose"
 import { CreateUserParams, DeleteUserParams, UpdateUserParams } from "./shared.types";
 import { revalidatePath } from 'next/cache';
-import { NextResponse } from 'next/server';
+
 
 export async function getUserById(params: any){
     try {
