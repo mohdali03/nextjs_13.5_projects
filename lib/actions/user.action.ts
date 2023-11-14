@@ -1,5 +1,4 @@
-import { updateUser } from '@/lib/actions/user.action';
-// import { getUserById } from '@/lib/actions/user.action';
+
 "use server"
 
 import User from "@/db/users.model";
