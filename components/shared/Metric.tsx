@@ -13,17 +13,17 @@ interface MetricProps {
     isAuthor?: boolean;
 }
 const Metric = ({
-    //  imgUrl,
+     imgUrl, alt, 
      title,  value, href, textStyles, isAuthor }: MetricProps) => {
     const metricContent = (
         <>
-            {/* <Image
-                // src={imgUrl}
+            <Image
+                src={imgUrl}
                 width={16}
                 height={16}
                 alt={alt}
                 className={`object-contain ${href ? 'rounded-full' : ''}`}
-            /> */}
+            />
 
             <p className={`${textStyles} flex items-center gap-1`}>
                 {value}

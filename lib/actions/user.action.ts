@@ -1,13 +1,13 @@
-
 "use server"
 
 import User from "@/db/users.model";
 import { connectToDatabase } from "../mongoose"
 import { CreateUserParams, DeleteUserParams, UpdateUserParams } from "./shared.types";
 import { revalidatePath } from 'next/cache';
+import { Question } from "@/db/question.model";
 
 
-export async function getUserById(params: any){
+export async function getUserById(params: any) {
     try {
         connectToDatabase()
         const { userId } = params;
@@ -20,27 +20,26 @@ export async function getUserById(params: any){
         throw error;
     }
 }
-export async function createUser(userData: CreateUserParams){
+export async function createUser(userData: CreateUserParams) {
     try {
         connectToDatabase()
-        
 
-        const user = await User.create({userData})
-        
-        return user;
+        const newUser = await User.create(userData);
+        return newUser;
+
 
     } catch (error) {
         console.log(error)
         throw error;
     }
 }
-export async function updateUser(params: UpdateUserParams){
+export async function updateUser(params: UpdateUserParams) {
     try {
         connectToDatabase()
-        const {clerkId, updateData, path} =  params
+        const { clerkId, updateData, path } = params
 
-        await User.findOneAndUpdate({clerkId}, updateData,{new:true})
-        
+        await User.findOneAndUpdate({ clerkId }, updateData, { new: true })
+
         revalidatePath(path)
 
     } catch (error) {
@@ -48,17 +47,18 @@ export async function updateUser(params: UpdateUserParams){
         throw error;
     }
 }
-export async function deleteUser(params: DeleteUserParams){
+export async function deleteUser(params: DeleteUserParams) {
     try {
         connectToDatabase()
-        const {clerkId} =  params
+        const { clerkId } = params
 
-        const deleteUser = await User.findOneAndDelete({clerkId})
+        const user = await User.findOneAndDelete({ clerkId });
 
-        if(!deleteUser){
-            throw new Error("User is not found ")
+        if (!user) {
+            throw new Error('User not found');
         }
-        
+        await Question.deleteMany({ author: user._id });
+
         return deleteUser;
 
     } catch (error) {
