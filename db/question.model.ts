@@ -12,6 +12,7 @@ export interface IQuestion extends Document {
     CreatedAt: Date;
     UpdateAt: Date;
 }
+
 const questionSchema = new Schema({
     title: {
         type: String,
