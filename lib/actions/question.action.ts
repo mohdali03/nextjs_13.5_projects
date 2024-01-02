@@ -1,10 +1,10 @@
-// import { Question } from './../../db/question.model';
+
 "use server"
 import { Tag } from '@/db/tag.model';
 import { Question } from '@/db/question.model';
 
 import { connectToDatabase } from "../mongoose"
-import { CreateQuestionParams, GetQuestionByIdParams, GetQuestionsParams } from './shared.types';
+import { CreateQuestionParams, GetQuestionByIdParams, GetQuestionsParams, QuestionVoteParams } from './shared.types';
 import User from '@/db/users.model';
 import { revalidatePath } from 'next/cache';
 
@@ -65,20 +65,104 @@ export async function createQuestion(Params: CreateQuestionParams) {
 }
 
 export async function getQuestionsbyId(params: GetQuestionByIdParams) {
-    try{
+    try {
         connectToDatabase()
 
         const { questionId } = params;
         const question = await Question.findById(questionId)
-        .populate(
-            { path: 'tags', model: Tag }
-        )
-        .populate({ path: 'author', model: User, select: '_id clerkId name picture'})
-            
+            .populate(
+                { path: 'tags', model: Tag }
+            )
+            .populate({ path: 'author', model: User, select: '_id clerkId name picture' })
+
         return question
+    }
+    catch (err) {
+        console.log(err)
+        throw err;
+    }
+}
+
+
+export async function upvoteQuestion(params: QuestionVoteParams) {
+    try {
+        connectToDatabase();
+        const { questionId, userId, hasupVoted, hasdownVoted, path } = params;
+
+        let updateQuery = {};
+
+        if (hasupVoted) {
+            updateQuery = { $pull: { upvotes: userId } }
+
+        } else if (hasdownVoted) {
+            updateQuery = {
+                $pull: { downvotes: userId },
+                $push: { upvotes: userId }
+            }
+
         }
-        catch(err){
-            console.log(err)
-            throw err;
+        else {
+            updateQuery = { $addToSet: { upvotes: userId } }
         }
+
+
+        const question = await Question.findByIdAndUpdate(
+            questionId, updateQuery, { new: true }
+        )
+
+
+        if (!question) {
+            throw new Error('Question not found')
+        }
+        revalidatePath(path);
+
+
+
+    }
+    catch (e) {
+        console.log("Error in connecting to the database");
+        throw e;
+    }
+
+}
+export async function downvoteQuestion(params: QuestionVoteParams) {
+    try {
+        connectToDatabase();
+        const { questionId, userId, hasupVoted, hasdownVoted, path } = params;
+
+        let updateQuery = {};
+
+        if (hasdownVoted) {
+            updateQuery = { $pull: { downvotes: userId } }
+
+        } else if (hasupVoted) {
+            updateQuery = {
+                $pull: { upvotes: userId },
+
+                $push: { downvotes: userId }
+            }
+        }
+        else {
+            updateQuery = { $addToSet: { downvotes: userId } }
+        }
+
+
+
+        const question = await Question.findByIdAndUpdate(
+            questionId, updateQuery, { new: true }
+        )
+
+        if (!question) {
+            throw new Error('Question not found')
+        }
+        revalidatePath(path);
+
+
+
+    }
+    catch (e) {
+        console.log("Error in connecting to the database");
+        throw e;
+    }
+
 }
