@@ -12,20 +12,19 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react'
 
-const page = async ({ params, searchParams } : any) => {
+const page = async ({ params, searchParams }: any) => {
   // const result = await getQuestionById({ questionId: params.id });
   const { userId: clerkId } = auth()
-  
+
   let mongoUser;
-  
+
   if (clerkId) {
     mongoUser = await getUserById({ userId: clerkId })
   }
   const result = await getQuestionsbyId({ questionId: params.id })
-
   // console.log(mongoUser ? JSON.stringify(mongoUser._id) : "User not found");
-
-
+  
+ 
 
   return (
     <>
@@ -48,14 +47,14 @@ const page = async ({ params, searchParams } : any) => {
           </Link>
           <div className="flex justify-end">
             <Votes
-            type = "Question"
-            itemId = {JSON.stringify(result._id)}
-            userId = {JSON.stringify(mongoUser._id)}
-            upvotes = {result.upvotes.length}
-            hasupVoted = {result.upvotes.includes(mongoUser._id)}
-            downvotes = {result.downvotes.length}
-            hasdownVoted = {result.downvotes.includes(mongoUser._id)}
-            hasSaved = {mongoUser?.saved.includes(result._id)}
+              type="Question"
+              itemId={JSON.stringify(result._id)}
+              userId={JSON.stringify(mongoUser._id)}
+              upvotes={result.upvotes.length}
+              hasupVoted={result.upvotes.includes(mongoUser._id)}
+              downvotes={result.downvotes.length}
+              hasdownVoted={result.downvotes.includes(mongoUser._id)}
+              hasSaved={mongoUser?.saved.includes(result._id)}
             />
           </div>
         </div>
@@ -81,7 +80,7 @@ const page = async ({ params, searchParams } : any) => {
         <Metric
           imgUrl="/assets/icons/eye.svg"
           alt="eye"
-          value={formatAndDivideNumber(result.views)}
+          value={formatAndDivideNumber(result.view)}
           title="Views"
           textStyles="small-medium text-dark400_light800"
         />
@@ -104,8 +103,8 @@ const page = async ({ params, searchParams } : any) => {
         questionId={result._id}
         userId={mongoUser._id}
         totalAnswer={result.answers.length}
-        // page={searchParams?.page}
-        // filter={searchParams?.filter}
+      // page={searchParams?.page}
+      // filter={searchParams?.filter}
       />
 
 

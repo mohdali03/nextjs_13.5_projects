@@ -3,8 +3,8 @@ import { models, Schema, Document, model } from "mongoose";
 export interface ITag extends Document{
     name : string;
     desc: string;
-    question: Schema.Types.ObjectId;
-    follwers: Schema.Types.ObjectId;
+    question: Schema.Types.ObjectId[];
+    follwers: Schema.Types.ObjectId[];
     createOn: Date;
 }
 

@@ -1,12 +1,15 @@
 "use client"
 
 import { downvoteAnswer, upvoteAnswer } from '@/lib/actions/answer.action'
+import { viewQuestion } from '@/lib/actions/interaction.action'
 import { downvoteQuestion, upvoteQuestion } from '@/lib/actions/question.action'
+import { toggleSavedQuestion } from '@/lib/actions/user.action'
 import { formatAndDivideNumber } from '@/lib/utils'
+import { errorMonitor } from 'events'
 import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
 
-import React from 'react'
+import { useEffect } from 'react'
 
 interface Props {
     type: string,
@@ -29,108 +32,20 @@ const Votes = ({
     hasSaved
 }: Props) => {
     const pathname = usePathname();
-    // const router = useRouter();
+    const router = useRouter();
 
-    const handleSaved = () => {
+    const handleSaved = async () => {
 
+        await toggleSavedQuestion({
+            questionId: JSON.parse(itemId),
+            userId: JSON.parse(userId),
+            path: pathname,
+        })
     }
-    // const handleVote = async (action: string) => {
-    //     if (!userId) {
-    //         return;
-    //     }
-    //     // if(action === 'upvote'){
-    //     //     if(type === "Question"){
-    //     //         await upvoteQuestion({
-    //     //             questionId: JSON.parse(itemId),
-    //     //             userId: JSON.parse(userId),
-    //     //             hasupVoted,
-    //     //             hasdownVoted,
-    //     //             path : pathname,
-
-    //     //         })
-    //     //         console.log({hasupVoted, hasdownVoted});
-
-    //     //     }
-    //     //     else if (type === "Answer"){
-    //     //         // await upvoteAnswer({
-    //     //         //     questionId: JSON.parse(itemId),
-    //     //         //     userId: JSON.parse(userId),
-    //     //         //     hasupVoted,
-    //     //         //     hasdownVoted,
-    //     //         //     path : pathname,
-
-    //     //         // })
-    //     //     }
-
-
-    //     // }   
-    //     if (action === 'upvote') {
-    //         try {
-    //             if (type === "Question") {
-    //                 await upvoteQuestion({
-    //                     questionId: JSON.parse(itemId),
-    //                     userId: JSON.parse(userId),
-    //                     hasupVoted,
-    //                     hasdownVoted,
-    //                     path: pathname
-    //                 });
-    //             }
-    //             // Add else-if for other types if needed
-    //         } catch (error) {
-    //             console.error("Error upvoting:", error);
-    //         }
-    //     }
-
-    //     //     if(action === 'downvote'){
-    //     //         console.log({hasupVoted, hasdownVoted});
-    //     //         if(type === "Question"){
-    //     //             await downvoteQuestion({
-    //     //                 questionId: JSON.parse(itemId),
-    //     //                 userId: JSON.parse(userId),
-    //     //                 hasupVoted,
-    //     //                 hasdownVoted,
-    //     //                 path : pathname,
-
-    //     //             })
-
-    //     //         }
-    //     //         else if (type === "Answer"){
-    //     //             // await downVoteAnswer({
-    //     //             //     questionId: JSON.parse(itemId),
-    //     //             //     userId: JSON.parse(userId),
-    //     //             //     hasupVoted,
-    //     //             //     hasdownVoted,
-    //     //             //     path : pathname,
-
-    //     //             // })
-    //     //         }
-
-    //     //     }   
-    //     // }
-    //     if (action === 'downvote') {
-    //         try {
-    //             if (type === "Question") {
-    //                 await downvoteQuestion({
-    //                     questionId: JSON.parse(itemId),
-    //                     userId: JSON.parse(userId),
-    //                     hasupVoted,
-    //                     hasdownVoted,
-    //                     path: pathname
-    //                 });
-    //             }
-    //             // Add else-if for other types if needed
-    //         } catch (error) {
-    //             console.error("Error downvoting:", error);
-    //         }
-    //     }
-    // };
 
     const handleVote = async (action: string) => {
         if (!userId) {
-            return;            // toast({
-            //     title: 'Please log in',
-            //     description: 'You must be logged in to perform this action',
-            // })
+            return;
         }
 
         if (action === 'upvote') {
@@ -152,10 +67,7 @@ const Votes = ({
                 })
             }
 
-            // return toast({
-            //     title: `Upvote ${!hasupVoted ? 'Successful' : 'Removed'}`,
-            //     variant: !hasupVoted ? 'default' : 'destructive'
-            // })
+
         }
 
         if (action === 'downvote') {
@@ -177,10 +89,33 @@ const Votes = ({
                 })
             }
 
-           
+
 
         }
+
+
     }
+
+
+
+    useEffect(() => {
+        try {
+
+            if (type === 'Question') {
+
+                viewQuestion({
+                    questionId: JSON.parse(itemId),
+                    userId: userId ? JSON.parse(userId) : undefined,
+                })
+                
+            }
+        } catch (error) {
+            console.log(error)
+            throw error;
+        }
+
+    }, [itemId, userId, pathname, router]);
+
     return (
         <div className="flex gap-5">
             <div className="flex-center gap-2.5">
@@ -224,15 +159,18 @@ const Votes = ({
                     </div>
                 </div>
             </div>
-           { type === "Question" && (<Image
-                src={hasSaved ? '/assets/icone/star-filled.svg' : '/assets/icons/star-red.svg'}
+            {type === "Question" && (<Image
+                src={hasSaved
+                    ? '/assets/icons/star-filled.svg'
+                    : '/assets/icons/star-red.svg'
+                }
                 alt='star'
                 width={18}
                 height={18}
                 className='cursor-pointer'
                 onClick={handleSaved}
 
-            /> )}
+            />)}
         </div>
     )
 }
