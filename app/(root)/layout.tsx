@@ -1,4 +1,4 @@
-import LeftSidebar from '@/components/shared/LeftSidebar'
+import LeftSidebar from '@/components/shared/search/LeftSidebar'
 import RightSidebar from '@/components/shared/RightSidebar'
 import Navbar from '@/components/shared/navbar/Navbar'
 import { SignedOut } from '@clerk/nextjs'
