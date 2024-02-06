@@ -4,6 +4,7 @@ import RenderTag from '../shared/RenderTag';
 import Metric from '../shared/Metric';
 import { formatAndDivideNumber, getTimestamp } from '@/lib/utils';
 import { SignedIn } from '@clerk/nextjs';
+import EditDeleteAction from '../shared/EditDeleteAction';
 // import EditDeleteAction from '../shared/EditDeleteAction';
 
 interface QuestionProps {
@@ -37,6 +38,7 @@ const QuestionCard = ({
     answers,
     createdAt
 }: QuestionProps) => {
+
     const showActionButtons = clerkId && clerkId === author.clerkId;
 
     return (
@@ -54,9 +56,9 @@ const QuestionCard = ({
                 </div>
 
                 <SignedIn>
-                    {/* {showActionButtons && (
-                        // <EditDeleteAction type="Question" itemId={JSON.stringify(_id)} />
-                    )} */}
+                    {showActionButtons && (
+                        <EditDeleteAction type="Question" itemId={JSON.stringify(_id)} />
+                    )}
                 </SignedIn>
             </div>
 
@@ -72,7 +74,7 @@ const QuestionCard = ({
                     alt="user"
                     value={author.name}
                     title={` - asked ${getTimestamp(createdAt)}`}
-                    href={`/profile/${author._id}`}
+                    href={`/profile/${author.clerkId}`}
                     isAuthor
                     textStyles="body-medium text-dark400_light700"
                 />

@@ -18,32 +18,39 @@ import { Input } from "@/components/ui/input"
 import { QuestionSchema } from "@/lib/validations"
 import { Badge } from "../ui/badge"
 import Image from "next/image"
-import { createQuestion } from "@/lib/actions/question.action"
+import { EditQuestion, createQuestion } from "@/lib/actions/question.action"
 // import {  } from "next/navigation"
 import { usePathname, useRouter } from "next/navigation"
+import { useTheme } from "@/context/ThemeProvider"
 // import { useRef } from "react"
 
 interface Props {
     mongoUserId: string;
+    type?: string;
+    questionDetails?: string;
 }
 
 
 
 
-export default function Question({ mongoUserId }: Props) {
+export default function Question({ mongoUserId, type, questionDetails }: Props) {
     const editorRef = useRef(null);
+
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const type: string = 'create'
+    const { mode } = useTheme();
     const router = useRouter()
     const pathname = usePathname()
-    
+
+    const parasedQuestionDetails = questionDetails && JSON.parse(questionDetails || " ")
+    console.log(parasedQuestionDetails)
+    const groupedTags = parasedQuestionDetails?.tags.map((tag: { name: any }) => (tag.name))
 
     const form = useForm<z.infer<typeof QuestionSchema>>({
         resolver: zodResolver(QuestionSchema),
         defaultValues: {
-            title: "",
-            explanation: "",
-            tags: []
+            title: parasedQuestionDetails?.title || "",
+            explanation: parasedQuestionDetails?.content || "",
+            tags: groupedTags || []
         },
     })
 
@@ -52,18 +59,30 @@ export default function Question({ mongoUserId }: Props) {
     // 2. Define a submit handler.
     async function onSubmit(values: z.infer<typeof QuestionSchema>) {
         setIsSubmitting(true)
-        
+
         try {
-            await createQuestion({
-                title: values.title,
-                content: values.explanation,
-                tags: values.tags,
-                author: JSON.parse(mongoUserId),
-                path: pathname
-            });
-            // console.log('Submit button clicked');
-            
-            router.push('/');
+            if (type === "Edit") {
+                await EditQuestion({
+                    questionId: parasedQuestionDetails._id,
+                    title: values.title,
+                    content: values.explanation,
+                    path: pathname
+
+                })
+                router.push(`/question/${parasedQuestionDetails._id}`)
+            } else {
+                await createQuestion({
+                    title: values.title,
+                    content: values.explanation,
+                    tags: values.tags,
+                    author: JSON.parse(mongoUserId),
+                    path: pathname
+                });
+
+
+
+                router.push('/');
+            }
         } catch (error) {
             console.error('Error:', error);
         } finally {
@@ -139,7 +158,7 @@ export default function Question({ mongoUserId }: Props) {
                                     }}
                                     onBlur={field.onBlur}
                                     onEditorChange={(content) => field.onChange(content)}
-                                    initialValue={''}
+                                    initialValue={parasedQuestionDetails?.content || ""}
                                     init={{
                                         height: 350,
                                         menubar: false,
@@ -153,8 +172,8 @@ export default function Question({ mongoUserId }: Props) {
                                             'codesample | bold italic forecolor | alignleft aligncenter |' +
                                             'alignright alignjustify | bullist numlist',
                                         content_style: 'body { font-family:Inter; font-size:16px }',
-                                        // skin: mode === 'dark' ? 'oxide-dark' : 'oxide',
-                                        // content_css: mode === 'dark' ? 'dark' : 'light',
+                                        skin: mode === 'dark' ? 'oxide-dark' : 'oxide',
+                                        content_css: mode === 'dark' ? 'dark' : 'light',
                                     }}
                                 />
                             </FormControl>

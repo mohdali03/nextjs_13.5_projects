@@ -4,11 +4,14 @@ import LocalSearch from '@/components/shared/search/LocalSearch'
 import { Button } from '@/components/ui/button'
 import { UserFilters } from '@/constant/filters'
 import { GetAllUser } from '@/lib/actions/user.action'
+import { SearchParamsProps } from '@/types'
 import Link from 'next/link'
 import React from 'react'
 
-const page = async () => {
-  const result = await GetAllUser({})
+const page = async ({ searchParams }: SearchParamsProps) => {
+  const result = await GetAllUser({
+    searchQuery: searchParams.q,
+  })
 
   return (
     <>
@@ -42,9 +45,11 @@ const page = async () => {
           )
 
             : (
-              <div className='paragraph-regular text-dark200_light800 max-auto max-w-4xl text-center'>
-                <p>No user Yet </p>
-                <Link href='/sign-up' ></Link>
+              <div className="paragraph-regular text-dark200_light800 mx-auto max-w-4xl text-center">
+                <p>No users yet</p>
+                <Link href="/sign-up" className="mt-2 font-bold text-accent-blue">
+                  Join to be the first!
+                </Link>
               </div>
             )}
         </section>

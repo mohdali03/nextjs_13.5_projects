@@ -64,7 +64,7 @@ export async function getAllTags(params: GetAllTagsParams) {
 
         const tags = await Tag.find(query)
             .sort(sortOptions)
-            
+
             .limit(pageSize);
 
         // const isNext = totalTags > skipAmount + tags.length;
@@ -129,4 +129,25 @@ export async function getQuestionByTagId(params: GetQuestionsByTagIdParams) {
 
     }
 
+}
+
+
+export async function gethotTag() {
+    try {
+        connectToDatabase();
+        const result = await Tag.aggregate([
+            {
+                $project: {
+                    name: 1,
+                    questions: 1,
+                    questionCount: { $size: "$question" }
+                }
+            },
+            { $sort: { questionCount: -1 } },
+            { $limit: 5 }
+        ])
+        return result;
+    } catch (error) {
+        console.log(error);
+    }
 }

@@ -1,6 +1,10 @@
+"use client"
+
 import { Input } from '@/components/ui/input'
+import { formUrlQuery, removeKeysFromQuery } from '@/lib/utils'
 import Image from 'next/image'
-import React from 'react'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import React, { useEffect, useState } from 'react'
 
 
 interface CustomInputProps {
@@ -18,6 +22,43 @@ const LocalSearch = (
         imgSrc,
         placeholder,
         otherClasses }: CustomInputProps) => {
+
+    const [inputValue, setinputValue] = useState("");
+
+    const router = useRouter();
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
+
+    const query = searchParams.get("q");
+    console.log(inputValue)
+    useEffect(() => {
+
+        const Debounce = setTimeout(() => {
+
+            if (inputValue) {
+                const newUrl = formUrlQuery({
+                    params: searchParams.toString(),
+                    key: 'q',
+                    value: inputValue,
+
+
+                })
+
+                router.push(newUrl, { scroll: false });
+            } else {
+                if (pathname === route) {
+                    const newUrl = removeKeysFromQuery({
+                        params: searchParams.toString(),
+                        keysToRemove: ['q'],
+                    })
+                    router.replace(newUrl, { scroll: false });
+                }
+            }
+
+        }, 250);
+        return () => clearTimeout(Debounce);
+    }, [inputValue, route, pathname, router, searchParams, query])
+    console.log(query);
     return (
         <div className={`background-light800_darkgradient flex min-h-[56px] grow items-center gap-4 rounded-[10px] px-4 ${otherClasses}`}>
             {iconPosition === 'left' && (
@@ -33,7 +74,9 @@ const LocalSearch = (
             <Input
                 type="text"
                 placeholder={placeholder}
+                value={inputValue}
 
+                onChange={(e) => setinputValue(e.target.value)}
                 className="paragraph-regular no-focus placeholder text-dark400_light700 border-none bg-transparent shadow-none outline-none"
             />
 

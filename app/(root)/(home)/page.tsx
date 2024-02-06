@@ -10,70 +10,15 @@ import QuesitonCards from '@/components/cards/QuestionCards'
 import { HomePageFilters } from '@/constant/filters'
 import Link from "next/link";
 import { getQuestions } from "@/lib/actions/question.action";
-// import { Console } from "console";
+import { SearchParamsProps } from "@/types";
 
 
-// const Question = [
-//     {
-//         _id: "1",
-//         title: 'Cascading Deletes in SQLAlchemy?',
-//         tags: [
-//             {
-//                 _id: "1",
-//                 name: 'python'
-//             },
-//             {
-//                 _id: "2",
-//                 name: 'sql'
-//             }
-//         ],
-//         author: {
-//             _id: "1",
-//             name: 'John Deo',
-//             picture: '/assets/icons/avatar.svg',
-//             // clerkId: 'ABC123'
-//         },
-//         upvotes: 10,
-//         downvotes: 5,
-//         views: 340000,
-//         createdAt: new Date(2023, 9, 1),
-//         updatedAt: new Date(),
-//         answer: []
-//     },
-//     {
-//         _id: "2",
-//         title: 'How to center a div?',
-//         tags: [
-//             {
-//                 _id: "3",
-//                 name: 'Css'
-//             },
-//             {
-//                 _id: "4",
-//                 name: 'Tailwind'
-//             }
-//         ],
-//         author: {
-//             _id: "1",
-//             name: 'John Deo',
-//             picture: '/assets/icons/avatar.svg',
-//             // clerkId: 'ABC123'
-//         },
-//         upvotes: 10,
-//         downvotes: 5,
-//         views: 34,
-//         createdAt: new Date(2020, 0, 1),
-//         updatedAt: new Date(),
-//         answer: []
-//     }
-
-// ]
-
-
-
-export default async function Home() {
-    const result = await getQuestions({})
-    // console.log(result);
+export default async function Home({searchParams}: SearchParamsProps) {
+    const result = await getQuestions({
+        searchQuery : searchParams.q,
+        
+    })
+    
     
     return (
         <div>

@@ -3,17 +3,18 @@
 
 import { Question } from "@/db/question.model";
 import { connectToDatabase } from "../mongoose"
-import { AnswerVoteParams, CreateAnswerParams, GetAnswersParams } from "./shared.types"
+import { AnswerVoteParams, CreateAnswerParams, DeleteAnswerParams, GetAnswersParams } from "./shared.types"
 import Answer from "@/db/answer.model";
 import { revalidatePath } from "next/cache";
+import Interaction from "@/db/interaction.model";
 
 export async function createAnswer(params: CreateAnswerParams) {
 
     try {
         connectToDatabase();
-        const { content, author,question, path } = params;
+        const { content, author, question, path } = params;
         const Newanswer = await Answer.create({ content, author, question, path });
-        console.log({ Newanswer });
+        // console.log({ Newanswer });
         await Question.findByIdAndUpdate(question, {
             $push: { answers: Newanswer._id }
         })
@@ -75,7 +76,9 @@ export async function upvoteAnswer(params: AnswerVoteParams) {
         const answer = await Answer.findByIdAndUpdate(
             answerId, updateQuery, { new: true }
         )
+        
 
+        
 
         if (!answer) {
             throw new Error('Question not found')
@@ -131,4 +134,41 @@ export async function downvoteAnswer(params: AnswerVoteParams) {
         throw e;
     }
 
+}
+
+export async function DeleteAnswer(params: DeleteAnswerParams) {
+    try {
+        connectToDatabase();
+        const { path, answerId } = params;
+
+        const answers = await Answer.findById(answerId)
+
+        if (!answers) {
+            throw new Error("Answer not found")
+        }
+
+
+
+
+        await answers.deleteOne({ _id: answerId });
+
+        await Question.findOne({ _id: answerId }, { $pull: { answers: answerId } })
+
+       
+        await Interaction.deleteMany({ answer: answerId })
+            
+       
+
+
+
+
+
+        revalidatePath(path)
+
+
+
+
+    } catch (error) {
+
+    }
 }
