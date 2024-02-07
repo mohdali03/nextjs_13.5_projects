@@ -81,11 +81,17 @@ export async function GetAllUser(params: GetAllUsersParams) {
 
         const { page = 1, pageSize = 20, filter, searchQuery } = params;
         const query: FilterQuery<typeof User> = {};
-
+        let sortOptions = {};
         if(filter){
             switch (filter) {
-                case value:
-                    
+                case "new_users":
+                    sortOptions = { joinedAt: -1}
+                    break;
+                case "old_users":
+                    sortOptions = { joinedAt: 1}
+                    break;
+                case "old_users":
+                    sortOptions = { reputation: -1}
                     break;
             
                 default:
@@ -159,7 +165,28 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
         const query: FilterQuery<typeof Question> = searchQuery ? {
             title: { $regex: new RegExp(searchQuery, 'i') }
         } : {};
-
+        let sortOption = {};
+        switch (filter) {
+            case "most_recent":
+                sortOption = {createdAt : -1}
+                break;
+            case "oldest":
+                sortOption = {createdAt : 1}
+                break;
+            case "most_vote":
+                sortOption = {upvotes : -1}
+                break;
+            case "most_viewed":
+                sortOption = {view : -1}
+                break;
+        
+            case "most_answered":
+                sortOption = {answers : -1}
+                break;
+        
+            default:
+                break;
+        }
 
         const user = await User
             .findOne({ clerkId })
@@ -167,7 +194,7 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
                 path: 'saved',
                 match: query,
                 options: {
-                    sort: { createdAt: -1 }
+                    sort: sortOption
                 },
                 populate: [
                     { path: 'tags', model: Tag, select: "_id name" },
