@@ -13,7 +13,7 @@ const Page = async ({ searchParams }: SearchParamsProps) => {
         filter: searchParams.filter,
         page: searchParams.page ? +searchParams.page : 1,
     })
-    console
+    
     return (
         <>
             <h1 className="h1-bold text-dark100_light900">All Tags</h1>

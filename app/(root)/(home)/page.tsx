@@ -13,13 +13,15 @@ import { getQuestions } from "@/lib/actions/question.action";
 import { SearchParamsProps } from "@/types";
 
 
-export default async function Home({searchParams}: SearchParamsProps) {
+export default async function Home({ searchParams }: SearchParamsProps) {
+    
     const result = await getQuestions({
-        searchQuery : searchParams.q,
-        
+        searchQuery: searchParams.q,
+        filter : searchParams.filter,
+
     })
-    
-    
+
+
     return (
         <div>
             <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
@@ -65,7 +67,7 @@ export default async function Home({searchParams}: SearchParamsProps) {
                         description="Be the first to break the silence! 🚀 Ask a Question and kickstart the discussion. our query could be the next big thing others learn from. Get involved! 💡"
                         link="/addQuestion"
                         linktitle="Ask a Question" />}
-                        {/* {result.questions} */}
+                {/* {result.questions} */}
             </div>
 
         </div>

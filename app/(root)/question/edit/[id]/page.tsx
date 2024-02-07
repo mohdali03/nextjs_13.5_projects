@@ -14,7 +14,7 @@ const page = async ({ params }: ParamsProps) => {
   const result = await getQuestionsbyId({ questionId: params.id })
   // console.log(mongoUser);
 
-  console.log(result)
+  // console.log(result)
   return (
     <>
       <h1 className='h1-bold text-dark-100_light900 '>Edit Question</h1>
