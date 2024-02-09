@@ -47,7 +47,8 @@ export const getQuestions = async (params: GetQuestionsParams) => {
             .populate({ path: 'tags', model: Tag })
             .populate({ path: 'author', model: User })
             .sort(sortOptions)
-
+        
+        const isNext = question
 
         return { questions };
     } catch (err) {
