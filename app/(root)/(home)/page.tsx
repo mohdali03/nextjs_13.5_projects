@@ -1,18 +1,16 @@
-// import GlobalSearch from "@/components/shared/search/GlobalSearch";
 import HomeFilter from "@/components/home/HomeFilter";
 import Filter from "@/components/shared/Filter";
 import Pagination from "@/components/shared/Pagination";
 import NoResult from "@/components/shared/NoResult";
 import LocalSearch from "@/components/shared/search/LocalSearch";
 import { Button } from "@/components/ui/button";
-// import { UserButton } from "@clerk/nextjs";
-// import Image from "next/image";
-import QuesitonCards from '@/components/cards/QuestionCards'
+
+import QuesitonCards from '@/components/cards/QuestionCards';
 import { HomePageFilters } from '@/constant/filters'
 import Link from "next/link";
 import { getQuestions } from "@/lib/actions/question.action";
 import { SearchParamsProps } from "@/types";
-;
+
 
 
 export default async function Home({ searchParams }: SearchParamsProps) {
@@ -20,6 +18,7 @@ export default async function Home({ searchParams }: SearchParamsProps) {
     const result = await getQuestions({
         searchQuery: searchParams.q,
         filter: searchParams.filter,
+        page: searchParams.page ? + searchParams.page : 1,
 
     })
 
@@ -77,7 +76,7 @@ export default async function Home({ searchParams }: SearchParamsProps) {
 
                 <Pagination
                     pageNumber={searchParams?.page ? + searchParams.page : 1}
-                    isNext={false} />
+                    isNext={result.isNext} />
             </div>
         </div>
     )
