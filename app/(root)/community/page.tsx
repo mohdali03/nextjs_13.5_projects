@@ -7,11 +7,12 @@ import { GetAllUser } from '@/lib/actions/user.action'
 import { SearchParamsProps } from '@/types'
 import Link from 'next/link'
 import React from 'react'
-
+import Pagination from "@/components/shared/Pagination";
 const page = async ({ searchParams }: SearchParamsProps) => {
   const result = await GetAllUser({
     searchQuery: searchParams.q,
-    filter : searchParams.filter,
+    filter: searchParams.filter,
+    page : searchParams.page ?  + searchParams.page : 1,
   })
 
   return (
@@ -53,7 +54,14 @@ const page = async ({ searchParams }: SearchParamsProps) => {
                 </Link>
               </div>
             )}
+
         </section>
+        <div className="mt-10">
+
+                <Pagination
+                    pageNumber={searchParams?.page ? + searchParams.page : 1}
+                    isNext={result.isNext} />
+            </div>
       </div>
     </>
 

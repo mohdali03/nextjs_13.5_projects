@@ -15,7 +15,7 @@ export const getQuestions = async (params: GetQuestionsParams) => {
 
     try {
         connectToDatabase()
-        const { searchQuery, filter, page , pageSize = 2 } = params;
+        const { searchQuery, filter, page , pageSize = 1 } = params;
         const skipAmount = (page - 1) * pageSize;
 
         const query: FilterQuery<typeof Question> = {};
